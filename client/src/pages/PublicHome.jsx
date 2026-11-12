@@ -106,30 +106,48 @@ export const PublicHome = () => {
     fetchDates();
   }, []);
 
-  // Fetch menu whenever selectedDate changes
+  // Fetch menu whenever selectedDate changes (with auto-retry if cloud server is waking up)
   useEffect(() => {
-    const fetchMenu = async () => {
+    let isMounted = true;
+    let retryTimer = null;
+
+    const fetchMenu = async (attempt = 1) => {
       setLoading(true);
       setError('');
       try {
         const res = await api.getPublishedMenu(selectedDate);
+        if (!isMounted) return;
         if (res.success && res.menu) {
           setMenu(res.menu);
+          setLoading(false);
         } else {
           setMenu(null);
           setError(
             res.message || t('home.emptyTitle', "The menu hasn't been published yet.")
           );
+          setLoading(false);
         }
       } catch (err) {
-        setMenu(null);
-        setError(t('home.emptyTitle', "The menu hasn't been published yet."));
-      } finally {
-        setLoading(false);
+        if (!isMounted) return;
+        // If free cloud server is waking up from inactivity, auto-retry up to 3 times
+        if (attempt <= 3) {
+          retryTimer = setTimeout(() => {
+            if (isMounted) fetchMenu(attempt + 1);
+          }, 3500);
+        } else {
+          setMenu(null);
+          setError(t('home.emptyTitle', "The menu hasn't been published yet."));
+          setLoading(false);
+        }
       }
     };
 
     fetchMenu();
+
+    return () => {
+      isMounted = false;
+      if (retryTimer) clearTimeout(retryTimer);
+    };
   }, [selectedDate, t]);
 
   // Format date display (e.g., Wednesday, 14 October 2026 or ಬುಧವಾರ, ೧೪ ಅಕ್ಟೋಬರ್ ೨೦೨೬)
