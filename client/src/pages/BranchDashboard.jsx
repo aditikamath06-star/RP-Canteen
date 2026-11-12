@@ -565,9 +565,6 @@ export const BranchDashboard = () => {
                       </div>
                       <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{t(`categories.${item.category}`, item.category)}</div>
                     </div>
-                    <span style={{ fontSize: '0.75rem', background: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: '10px', fontWeight: '600' }}>
-                      {currentLang === 'kn' ? 'ಶುದ್ಧ ಸಸ್ಯಾಹಾರಿ 🌱' : 'Pure Veg 🌱'}
-                    </span>
                   </div>
                 ))}
               </div>

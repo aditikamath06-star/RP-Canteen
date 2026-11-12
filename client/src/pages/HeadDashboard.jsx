@@ -3681,7 +3681,6 @@ export const HeadDashboard = () => {
                   ? t('head.editDishHeading', 'Edit Vegetarian Dish in Menu')
                   : t('head.addDishHeading', 'Add Vegetarian Dish to Menu')}
               </h4>
-              <VegBadge showLabel={true} />
             </div>
 
             <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1rem' }}>
@@ -3957,9 +3956,6 @@ export const HeadDashboard = () => {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
               <h4 style={{ fontSize: '0.95rem' }}>{t('head.dishesInMenu', { count: menuFormItems.length })}</h4>
-              <span style={{ fontSize: '0.75rem', color: '#15803d', fontWeight: '600' }}>
-                {t('home.pureVegGuarantee', '100% Pure Vegetarian Guaranteed • No Prices')}
-              </span>
             </div>
 
             {menuFormItems.length === 0 ? (

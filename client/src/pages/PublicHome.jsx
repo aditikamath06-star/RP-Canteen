@@ -338,7 +338,6 @@ export const PublicHome = () => {
 
           {menu && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <VegBadge showLabel={true} />
               <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
                 {t('home.dishesAvailable', {
                   count: filteredItems.length,
@@ -459,7 +458,6 @@ export const PublicHome = () => {
                           </div>
                         )}
                         <div className="food-card-badge-layer">
-                          <VegBadge showLabel={true} />
                           <StatusBadge
                             status={item.isAvailable ? 'available' : 'unavailable'}
                           />
@@ -491,10 +489,7 @@ export const PublicHome = () => {
                           </div>
                         )}
 
-                        <div className="food-card-footer">
-                          <span style={{ fontSize: '0.8rem', color: '#15803d', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <CheckCircle2 size={14} /> {t('home.pureVegGuarantee', '100% Sattvic Pure Vegetarian')}
-                          </span>
+                        <div className="food-card-footer" style={{ justifyContent: 'flex-end' }}>
                           <button
                             type="button"
                             onClick={() => handleOpenFeedback(item)}
