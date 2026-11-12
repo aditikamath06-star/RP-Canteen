@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { api } from '../services/api';
 import { VegBadge } from '../components/VegBadge';
 import { StatusBadge } from '../components/StatusBadge';
+import { Modal } from '../components/Modal';
+import { resolveFoodImage, CATEGORY_DEFAULT_IMAGES } from '../utils/foodImages';
 import {
   Calendar,
-  Clock,
   Sparkles,
   Search,
-  Filter,
   CheckCircle2,
-  AlertCircle,
   Coffee,
   Info,
+  MessageSquare,
+  Star,
 } from 'lucide-react';
 
 const MEAL_CATEGORIES = [
@@ -26,8 +27,9 @@ const MEAL_CATEGORIES = [
 ];
 
 export const PublicHome = () => {
-  const location = useLocation();
+  const { t, i18n } = useTranslation();
   const todayStr = new Date().toISOString().split('T')[0];
+  const currentLang = i18n.language?.startsWith('kn') ? 'kn' : 'en';
 
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [publishedDates, setPublishedDates] = useState([]);
@@ -36,6 +38,58 @@ export const PublicHome = () => {
   const [error, setError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Customer Feedback state
+  const [feedbackModalItem, setFeedbackModalItem] = useState(null);
+  const [feedbackRating, setFeedbackRating] = useState(5);
+  const [feedbackComment, setFeedbackComment] = useState('');
+  const [feedbackCustomerName, setFeedbackCustomerName] = useState('');
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
+  const [feedbackSuccessMsg, setFeedbackSuccessMsg] = useState('');
+
+  const handleOpenFeedback = (item) => {
+    setFeedbackModalItem(item);
+    setFeedbackRating(5);
+    setFeedbackComment('');
+    setFeedbackCustomerName('');
+    setFeedbackSuccessMsg('');
+  };
+
+  const handleSubmitFeedback = async (e) => {
+    e.preventDefault();
+    if (!menu?._id || !feedbackModalItem?._id) return;
+    setFeedbackSubmitting(true);
+    try {
+      const res = await api.submitDishFeedback(menu._id, feedbackModalItem._id, {
+        rating: feedbackRating,
+        comment: feedbackComment,
+        customerName: feedbackCustomerName,
+      });
+      if (res.success) {
+        setFeedbackSuccessMsg(t('home.feedbackSuccess', 'Thank you for your valuable feedback!'));
+        const updatedItems = (menu.items || []).map((it) => {
+          if (it._id === feedbackModalItem._id) {
+            return {
+              ...it,
+              customerFeedbacks: res.customerFeedbacks || [
+                ...(it.customerFeedbacks || []),
+                { rating: feedbackRating, comment: feedbackComment },
+              ],
+            };
+          }
+          return it;
+        });
+        setMenu({ ...menu, items: updatedItems });
+        setTimeout(() => {
+          setFeedbackModalItem(null);
+        }, 1500);
+      }
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setFeedbackSubmitting(false);
+    }
+  };
 
   // Fetch list of dates that have published menus
   useEffect(() => {
@@ -63,28 +117,28 @@ export const PublicHome = () => {
           setMenu(res.menu);
         } else {
           setMenu(null);
-          // Standard empty state message from requirements
           setError(
-            res.message || "The menu hasn't been published yet. Please check back later!"
+            res.message || t('home.emptyTitle', "The menu hasn't been published yet.")
           );
         }
       } catch (err) {
         setMenu(null);
-        setError("The menu hasn't been published yet. Please check back later!");
+        setError(t('home.emptyTitle', "The menu hasn't been published yet."));
       } finally {
         setLoading(false);
       }
     };
 
     fetchMenu();
-  }, [selectedDate]);
+  }, [selectedDate, t]);
 
-  // Format date display (e.g., Wednesday, 14 October 2026)
+  // Format date display (e.g., Wednesday, 14 October 2026 or ಬುಧವಾರ, ೧೪ ಅಕ್ಟೋಬರ್ ೨೦೨೬)
   const formatDateHeading = (dateStr) => {
     try {
       const [year, month, day] = dateStr.split('-');
       const d = new Date(year, month - 1, day);
-      return d.toLocaleDateString('en-IN', {
+      const locale = currentLang === 'kn' ? 'kn-IN' : 'en-IN';
+      return d.toLocaleDateString(locale, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -95,15 +149,38 @@ export const PublicHome = () => {
     }
   };
 
+  // Helper to get localized dish name and description with clean fallbacks
+  const getDishName = (item) => {
+    if (!item) return '';
+    if (currentLang === 'kn') {
+      return item.nameKn || item.name || item.nameEn || '';
+    }
+    return item.nameEn || item.name || item.nameKn || '';
+  };
+
+  const getDishDescription = (item) => {
+    if (!item) return '';
+    if (currentLang === 'kn') {
+      return item.descriptionKn || item.description || item.descriptionEn || '';
+    }
+    return item.descriptionEn || item.description || item.descriptionKn || '';
+  };
+
   // Filter items by category and search
   const filteredItems = menu?.items
     ? menu.items.filter((item) => {
         const matchesCategory =
           selectedCategory === 'All' || item.category === selectedCategory;
+        const nameText = getDishName(item);
+        const descText = getDishDescription(item);
+        const query = searchQuery.trim().toLowerCase();
+
         const matchesSearch =
-          !searchQuery.trim() ||
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchQuery.toLowerCase());
+          !query ||
+          nameText.toLowerCase().includes(query) ||
+          descText.toLowerCase().includes(query) ||
+          (item.name && item.name.toLowerCase().includes(query));
+
         return matchesCategory && matchesSearch;
       })
     : [];
@@ -116,13 +193,13 @@ export const PublicHome = () => {
         <div className="container hero-content">
           <div className="hero-institution-badge">
             <Sparkles size={15} />
-            Rashtrotthana Parishath
+            {t('home.institutionBadge', 'Rashtrotthana Parishath')}
           </div>
 
-          <h1 className="hero-title">Welcome to RP Canteen</h1>
+          <h1 className="hero-title">{t('home.heroTitle', 'Welcome to RP Canteen')}</h1>
 
           <p className="hero-subtitle">
-            Your Daily Canteen Menu at Rashtrotthana Parishath
+            {t('home.heroSubtitle', 'Your Daily Canteen Menu at Rashtrotthana Parishath')}
           </p>
 
           <div className="hero-date-card">
@@ -139,7 +216,7 @@ export const PublicHome = () => {
                   fontWeight: '700',
                 }}
               >
-                TODAY
+                {t('home.todayBadge', 'TODAY')}
               </span>
             )}
           </div>
@@ -172,7 +249,7 @@ export const PublicHome = () => {
               style={{ borderRadius: '999px', padding: '0.45rem 1rem' }}
               onClick={() => setSelectedDate(todayStr)}
             >
-              Today's Menu
+              {t('home.todaysMenu', "Today's Menu")}
             </button>
 
             <input
@@ -181,7 +258,7 @@ export const PublicHome = () => {
               style={{ width: 'auto', padding: '0.4rem 0.75rem', fontSize: '0.875rem', fontWeight: '600', borderRadius: '8px' }}
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              aria-label="Select menu date"
+              aria-label={t('home.selectDate', 'Select menu date')}
             />
 
             {/* Quick selector for dates with published menus */}
@@ -191,12 +268,12 @@ export const PublicHome = () => {
                 style={{ width: 'auto', padding: '0.4rem 0.75rem', fontSize: '0.85rem', borderRadius: '8px' }}
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                aria-label="Published dates list"
+                aria-label={t('home.otherMenus', { count: publishedDates.length })}
               >
-                <option value="">Other Menus ({publishedDates.length})</option>
+                <option value="">{t('home.otherMenus', { count: publishedDates.length })}</option>
                 {publishedDates.map((item) => (
                   <option key={item.date} value={item.date}>
-                    {item.date} {item.date === todayStr ? '(Today)' : ''}
+                    {item.date} {item.date === todayStr ? `(${t('home.todayBadge', 'TODAY')})` : ''}
                   </option>
                 ))}
               </select>
@@ -217,7 +294,7 @@ export const PublicHome = () => {
             />
             <input
               type="text"
-              placeholder="Search vegetarian dishes..."
+              placeholder={t('home.searchPlaceholder', 'Search vegetarian dishes...')}
               className="form-input"
               style={{ paddingLeft: '36px', paddingRight: '12px', height: '38px', borderRadius: '999px' }}
               value={searchQuery}
@@ -236,7 +313,7 @@ export const PublicHome = () => {
                 className={`cat-pill ${selectedCategory === cat ? 'active' : ''}`}
                 onClick={() => setSelectedCategory(cat)}
               >
-                {cat}
+                {t(`categories.${cat}`, cat)}
               </button>
             ))}
           </div>
@@ -245,7 +322,10 @@ export const PublicHome = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <VegBadge showLabel={true} />
               <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                {filteredItems.length} {filteredItems.length === 1 ? 'Dish' : 'Dishes'} Available
+                {t('home.dishesAvailable', {
+                  count: filteredItems.length,
+                  defaultValue: `${filteredItems.length} Dishes Available`,
+                })}
               </span>
             </div>
           )}
@@ -268,7 +348,7 @@ export const PublicHome = () => {
             }}
           >
             <Info size={18} />
-            <span><strong>Canteen Notice:</strong> {menu.specialNote}</span>
+            <span><strong>{t('home.canteenNotice', 'Canteen Notice:')}</strong> {menu.specialNote}</span>
           </div>
         )}
 
@@ -286,7 +366,9 @@ export const PublicHome = () => {
                 margin: '0 auto 1rem',
               }}
             ></div>
-            <p style={{ color: '#64748b', fontWeight: '500' }}>Loading daily vegetarian menu...</p>
+            <p style={{ color: '#64748b', fontWeight: '500' }}>
+              {t('home.loading', 'Loading daily vegetarian menu...')}
+            </p>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
         )}
@@ -298,11 +380,10 @@ export const PublicHome = () => {
               <Calendar size={32} />
             </div>
             <h3 className="empty-state-title">
-              The menu hasn't been published yet.
+              {t('home.emptyTitle', "The menu hasn't been published yet.")}
             </h3>
             <p className="empty-state-desc">
-              Please check back later! The canteen administration publishes daily
-              menus each morning.
+              {t('home.emptyDesc', 'Please check back later! The canteen administration publishes daily menus each morning.')}
             </p>
             <div style={{ marginTop: '1.5rem' }}>
               <button
@@ -310,7 +391,7 @@ export const PublicHome = () => {
                 className="btn btn-primary btn-sm"
                 onClick={() => setSelectedDate(todayStr)}
               >
-                Check Today's Menu
+                {t('home.checkToday', "Check Today's Menu")}
               </button>
             </div>
           </div>
@@ -322,60 +403,199 @@ export const PublicHome = () => {
             {filteredItems.length === 0 ? (
               <div className="empty-state-box" style={{ padding: '2.5rem 1rem' }}>
                 <Coffee size={32} style={{ color: '#94a3b8', margin: '0 auto 0.5rem' }} />
-                <h4>No dishes found in category "{selectedCategory}"</h4>
+                <h4>{t('home.noDishesCategory', { category: t(`categories.${selectedCategory}`, selectedCategory) })}</h4>
                 <p style={{ color: '#64748b', fontSize: '0.875rem' }}>
-                  Try selecting another category or clearing your search filter.
+                  {t('home.noDishesSub', 'Try selecting another category or clearing your search filter.')}
                 </p>
               </div>
             ) : (
               <div className="food-grid">
-                {filteredItems.map((item, idx) => (
-                  <div key={item._id || idx} className="food-card">
-                    {/* Food Image with Fallback */}
-                    <div className="food-card-img-wrapper">
-                      <img
-                        src={
-                          item.imageUrl ||
-                          'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80'
-                        }
-                        alt={item.name}
-                        className="food-card-img"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src =
-                            'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80';
-                        }}
-                      />
-                      <div className="food-card-badge-layer">
-                        <VegBadge showLabel={true} />
-                        <StatusBadge
-                          status={item.isAvailable ? 'available' : 'unavailable'}
-                        />
+                {filteredItems.map((item, idx) => {
+                  const dishName = getDishName(item);
+                  const dishDesc = getDishDescription(item);
+                  const categoryLabel = t(`categories.${item.category}`, item.category);
+                  const foodImg = resolveFoodImage(item);
+                  const fallbackCategoryImg = CATEGORY_DEFAULT_IMAGES[item.category] || 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=600&q=80';
+
+                  return (
+                    <div key={item._id || idx} className="food-card">
+                      {/* Food Image with Smart Auto-Detection & Safe Pure-Veg Graphic Fallback */}
+                      <div className="food-card-img-wrapper">
+                        {foodImg?.src ? (
+                          <img
+                            src={foodImg.src}
+                            alt={dishName}
+                            className="food-card-img"
+                            loading="lazy"
+                            onError={(e) => {
+                              // If custom link fails, fall back to smart category default
+                              e.target.onerror = null;
+                              e.target.src = fallbackCategoryImg;
+                            }}
+                          />
+                        ) : (
+                          <div className="food-card-placeholder-graphic">
+                            <div className="food-placeholder-icon">🌱</div>
+                            <div className="food-placeholder-name">{dishName}</div>
+                            <div className="food-placeholder-tag">{categoryLabel}</div>
+                          </div>
+                        )}
+                        <div className="food-card-badge-layer">
+                          <VegBadge showLabel={true} />
+                          <StatusBadge
+                            status={item.isAvailable ? 'available' : 'unavailable'}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Food Card Body - STRICTLY NO PRICES */}
+                      <div className="food-card-body">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                          <span className="food-card-category">{categoryLabel}</span>
+                          {item.customerFeedbacks && item.customerFeedbacks.length > 0 && (
+                            <span style={{ fontSize: '0.75rem', color: '#b45309', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                              ⭐ {(item.customerFeedbacks.reduce((a, b) => a + (b.rating || 5), 0) / item.customerFeedbacks.length).toFixed(1)}
+                              <span style={{ color: '#94a3b8', fontSize: '0.7rem', fontWeight: 'normal' }}>
+                                ({item.customerFeedbacks.length})
+                              </span>
+                            </span>
+                          )}
+                        </div>
+
+                        <h3 className="food-card-title">{dishName}</h3>
+                        {dishDesc && (
+                          <p className="food-card-desc">{dishDesc}</p>
+                        )}
+
+                        {item.feedback && (
+                          <div style={{ margin: '0.4rem 0', padding: '4px 8px', background: 'rgba(16, 185, 129, 0.08)', borderLeft: '3px solid #10b981', borderRadius: '4px', fontSize: '0.75rem', color: 'var(--color-primary-dark)' }}>
+                            💬 <strong>{t('head.colFeedback', 'Feedback')}:</strong> {item.feedback}
+                          </div>
+                        )}
+
+                        <div className="food-card-footer">
+                          <span style={{ fontSize: '0.8rem', color: '#15803d', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <CheckCircle2 size={14} /> {t('home.pureVegGuarantee', '100% Sattvic Pure Vegetarian')}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenFeedback(item)}
+                            style={{
+                              background: 'none',
+                              border: '1px solid #cbd5e1',
+                              borderRadius: '4px',
+                              padding: '2px 8px',
+                              fontSize: '0.75rem',
+                              color: 'var(--text-main)',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                            }}
+                          >
+                            <MessageSquare size={13} /> {t('home.giveFeedback', 'Feedback')}
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    {/* Food Card Body - STRICTLY NO PRICES */}
-                    <div className="food-card-body">
-                      <span className="food-card-category">{item.category}</span>
-                      <h3 className="food-card-title">{item.name}</h3>
-                      {item.description && (
-                        <p className="food-card-desc">{item.description}</p>
-                      )}
-
-                      <div className="food-card-footer">
-                        <span style={{ fontSize: '0.8rem', color: '#15803d', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <CheckCircle2 size={14} /> 100% Sattvic Pure Vegetarian
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>
         )}
       </div>
+
+      {/* Customer Feedback Modal */}
+      {feedbackModalItem && (
+        <Modal
+          isOpen={true}
+          title={t('home.feedbackFor', { dish: getDishName(feedbackModalItem) })}
+          onClose={() => setFeedbackModalItem(null)}
+        >
+          {feedbackSuccessMsg ? (
+            <div style={{ padding: '2rem 1rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🙏</div>
+              <h4 style={{ color: '#15803d', marginBottom: '0.5rem' }}>{feedbackSuccessMsg}</h4>
+              <p style={{ color: '#64748b', fontSize: '0.85rem' }}>
+                {t('home.pureVegGuarantee', '100% Sattvic Pure Vegetarian • Rashtrotthana Parishath')}
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmitFeedback}>
+              <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-main)', display: 'block', marginBottom: '0.5rem' }}>
+                  {t('home.rateDish', 'Rate this Dish')}
+                </label>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '1.75rem',
+                        color: star <= feedbackRating ? '#eab308' : '#cbd5e1',
+                        padding: '0 4px',
+                        transition: 'transform 0.1s',
+                      }}
+                      onClick={() => setFeedbackRating(star)}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--text-main)', display: 'block', marginBottom: '4px' }}>
+                  {t('home.yourFeedback', 'Your Feedback / Review (Optional)')}
+                </label>
+                <textarea
+                  rows={3}
+                  className="form-textarea"
+                  placeholder={t('home.feedbackInputPlaceholder', 'How was the taste and preparation?')}
+                  value={feedbackComment}
+                  onChange={(e) => setFeedbackComment(e.target.value)}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--text-main)', display: 'block', marginBottom: '4px' }}>
+                  {t('home.yourNameOptional', 'Your Name (Optional)')}
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Customer"
+                  value={feedbackCustomerName}
+                  onChange={(e) => setFeedbackCustomerName(e.target.value)}
+                />
+              </div>
+
+              <div className="modal-footer" style={{ margin: '1rem -1.5rem -1.5rem', padding: '1rem 1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => setFeedbackModalItem(null)}
+                  disabled={feedbackSubmitting}
+                >
+                  {t('head.cancel', 'Cancel')}
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-sm"
+                  disabled={feedbackSubmitting}
+                >
+                  {feedbackSubmitting ? t('home.submitting', 'Submitting...') : t('home.submitFeedback', 'Submit Feedback')}
+                </button>
+              </div>
+            </form>
+          )}
+        </Modal>
+      )}
     </main>
   );
 };

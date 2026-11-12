@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { api } from '../services/api';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
+  const { i18n } = useTranslation();
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem('rp_canteen_user');
@@ -23,6 +25,9 @@ export const AuthProvider = ({ children }) => {
           if (res.success && res.user) {
             setUser(res.user);
             localStorage.setItem('rp_canteen_user', JSON.stringify(res.user));
+            if (res.user.preferredLanguage && !localStorage.getItem('rp_canteen_language')) {
+              i18n.changeLanguage(res.user.preferredLanguage);
+            }
           }
         } catch {
           // Token expired or invalid
@@ -45,6 +50,9 @@ export const AuthProvider = ({ children }) => {
       setUser(res.user);
       localStorage.setItem('rp_canteen_token', res.token);
       localStorage.setItem('rp_canteen_user', JSON.stringify(res.user));
+      if (res.user.preferredLanguage) {
+        i18n.changeLanguage(res.user.preferredLanguage);
+      }
       return res.user;
     }
     throw new Error(res.message || 'Login failed');

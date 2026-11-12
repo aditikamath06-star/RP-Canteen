@@ -83,6 +83,9 @@ router.post('/login', async (req, res) => {
         email: user.email,
         fullName: user.fullName,
         role: user.role,
+        branchId: user.branchId,
+        branchNameKn: user.branchNameKn,
+        preferredLanguage: user.preferredLanguage || 'en',
         lastLogin: user.lastLogin,
       },
     });
@@ -107,9 +110,43 @@ router.get('/me', authenticate, async (req, res) => {
       email: req.user.email,
       fullName: req.user.fullName,
       role: req.user.role,
+      branchId: req.user.branchId,
+      branchNameKn: req.user.branchNameKn,
+      preferredLanguage: req.user.preferredLanguage || 'en',
       lastLogin: req.user.lastLogin,
     },
   });
+});
+
+// @route   PATCH /api/auth/language
+// @desc    Update user preferred language
+// @access  Protected
+router.patch('/language', authenticate, async (req, res) => {
+  try {
+    const { language } = req.body;
+    if (!['en', 'kn'].includes(language)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Language must be either "en" or "kn".',
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+
+    user.preferredLanguage = language;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Preferred language updated successfully.',
+      preferredLanguage: user.preferredLanguage,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 // @route   POST /api/auth/logout

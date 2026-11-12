@@ -42,6 +42,21 @@ const inventorySchema = new mongoose.Schema(
       min: [0, 'Threshold cannot be negative'],
       default: 5,
     },
+    brand: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    unitPrice: {
+      type: Number,
+      min: [0, 'Unit price cannot be negative'],
+      default: 0,
+    },
+    totalCost: {
+      type: Number,
+      min: [0, 'Total cost cannot be negative'],
+      default: 0,
+    },
     isArchived: {
       type: Boolean,
       default: false,
@@ -72,6 +87,11 @@ inventorySchema.virtual('stockStatus').get(function () {
     return 'low_stock';
   }
   return 'in_stock';
+});
+
+// Virtual for total monetary valuation of current stock
+inventorySchema.virtual('totalValue').get(function () {
+  return Number(((this.currentQuantity || 0) * (this.unitPrice || 0)).toFixed(2));
 });
 
 // Indexes for fast searching and filtering

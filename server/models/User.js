@@ -33,15 +33,29 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: ['head', 'worker'],
-        message: '{VALUE} is not a valid staff role',
+        values: ['head', 'worker', 'branch'],
+        message: '{VALUE} is not a valid staff or branch role',
       },
       default: 'worker',
       required: true,
     },
+    branchId: {
+      type: String,
+      enum: ['head_office', 'mudranalaya', 'blood_bank', 'samraksha', 'ashtanga_yoga', null],
+      default: null,
+    },
+    branchNameKn: {
+      type: String,
+      default: '',
+    },
     isActive: {
       type: Boolean,
       default: true,
+    },
+    preferredLanguage: {
+      type: String,
+      enum: ['en', 'kn'],
+      default: 'en',
     },
     lastLogin: {
       type: Date,

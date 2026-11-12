@@ -36,6 +36,15 @@ app.use('/api/inventory', require('./routes/inventoryRoutes'));
 app.use('/api/movements', require('./routes/movementRoutes'));
 app.use('/api/staff', require('./routes/staffRoutes'));
 app.use('/api/audit-logs', require('./routes/auditRoutes'));
+app.use('/api/recipes', require('./routes/recipeRoutes'));
+app.use('/api/branch-orders', require('./routes/branchOrderRoutes'));
+app.use('/api/reports', require('./routes/reportRoutes'));
+app.use('/api/translate', require('./routes/translateRoutes'));
+
+// Root route: redirect to client frontend
+app.get('/', (req, res) => {
+  res.redirect(process.env.CLIENT_URL || 'http://localhost:5173');
+});
 
 // Health check and system info endpoint
 app.get('/api/health', (req, res) => {
@@ -72,14 +81,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Express server
-const server = app.listen(PORT, () => {
-  console.log(`================================================================`);
-  console.log(`RP Canteen API Server running on port ${PORT}`);
-  console.log(`Institution: Rashtrotthana Parishath`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Health check: http://localhost:${PORT}/api/health`);
-  console.log(`================================================================`);
-});
+// Start Express server if run directly
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`================================================================`);
+    console.log(`RP Canteen API Server running on port ${PORT}`);
+    console.log(`Institution: Rashtrotthana Parishath`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Health check: http://localhost:${PORT}/api/health`);
+    console.log(`================================================================`);
+  });
+}
 
 module.exports = app;

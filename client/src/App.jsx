@@ -8,6 +8,7 @@ import { PublicHome } from './pages/PublicHome';
 import { StaffLogin } from './pages/StaffLogin';
 import { WorkerDashboard } from './pages/WorkerDashboard';
 import { HeadDashboard } from './pages/HeadDashboard';
+import { BranchDashboard } from './pages/BranchDashboard';
 import { NotFound } from './pages/NotFound';
 
 // Protected Route wrapper with role-based guard
@@ -27,9 +28,12 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    // If worker tries to access head dashboard, redirect to staff dashboard
+    // Role-based redirection if accessing unauthorized route
     if (user?.role === 'worker') {
       return <Navigate to="/staff/dashboard" replace />;
+    }
+    if (user?.role === 'branch') {
+      return <Navigate to="/branch/dashboard" replace />;
     }
     return <Navigate to="/" replace />;
   }
@@ -67,6 +71,16 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={['head']}>
                   <HeadDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Branch Food Indent & Orders Portal */}
+            <Route
+              path="/branch/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['branch', 'head']}>
+                  <BranchDashboard />
                 </ProtectedRoute>
               }
             />

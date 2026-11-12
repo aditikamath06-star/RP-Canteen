@@ -4,8 +4,18 @@ const menuItemSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Food item name is required'],
       trim: true,
+      default: '',
+    },
+    nameEn: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    nameKn: {
+      type: String,
+      trim: true,
+      default: '',
     },
     category: {
       type: String,
@@ -20,6 +30,16 @@ const menuItemSchema = new mongoose.Schema(
       ],
     },
     description: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    descriptionEn: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    descriptionKn: {
       type: String,
       trim: true,
       default: '',
@@ -44,6 +64,43 @@ const menuItemSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    wastage: {
+      quantity: {
+        type: Number,
+        min: [0, 'Wastage quantity cannot be negative'],
+        default: 0,
+      },
+      unit: {
+        type: String,
+        default: 'kg',
+      },
+      reason: {
+        type: String,
+        trim: true,
+        default: '',
+      },
+      recordedAt: {
+        type: Date,
+      },
+      recordedBy: {
+        type: String,
+        trim: true,
+        default: '',
+      },
+    },
+    feedback: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    customerFeedbacks: [
+      {
+        rating: { type: Number, min: 1, max: 5, default: 5 },
+        comment: { type: String, trim: true, default: '' },
+        customerName: { type: String, trim: true, default: 'Customer' },
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
     displayOrder: {
       type: Number,
       default: 0,

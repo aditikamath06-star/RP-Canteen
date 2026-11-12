@@ -56,10 +56,30 @@ export const api = {
     localStorage.removeItem('rp_canteen_user');
   },
 
-  // Public Menu Endpoints
+  async updateLanguagePreference(language) {
+    const res = await fetch(`${API_BASE}/auth/language`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ language }),
+    });
+    return handleResponse(res);
+  },
+
+  async translateText(text, from = 'auto', to = 'kn') {
+    const res = await fetch(`${API_BASE}/translate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, from, to }),
+    });
+    return handleResponse(res);
+  },
+
+  // Public Menu Endpoints (includes staff details if logged in)
   async getPublishedMenu(date) {
     const query = date ? `?date=${encodeURIComponent(date)}` : '';
-    const res = await fetch(`${API_BASE}/menus/published${query}`);
+    const res = await fetch(`${API_BASE}/menus/published${query}`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse(res);
   },
 
@@ -112,10 +132,30 @@ export const api = {
     return handleResponse(res);
   },
 
+  async recordDishWastage(menuId, itemId, wastageData) {
+    const res = await fetch(`${API_BASE}/menus/${menuId}/items/${itemId}/wastage`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(wastageData),
+    });
+    return handleResponse(res);
+  },
+
   async deleteMenu(id) {
     const res = await fetch(`${API_BASE}/menus/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async submitDishFeedback(menuId, itemId, feedbackData) {
+    const res = await fetch(`${API_BASE}/menus/${menuId}/items/${itemId}/feedback`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(feedbackData),
     });
     return handleResponse(res);
   },
@@ -161,6 +201,10 @@ export const api = {
       body: JSON.stringify(movementData),
     });
     return handleResponse(res);
+  },
+
+  async updateStock(id, movementData) {
+    return this.adjustStock(id, movementData);
   },
 
   async archiveInventoryItem(id, archive = true) {
@@ -214,5 +258,129 @@ export const api = {
       headers: getAuthHeaders(),
     });
     return handleResponse(res);
+  },
+
+  // Recipes & Preparation Management
+  async getRecipes() {
+    const res = await fetch(`${API_BASE}/recipes`, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async getRecipeById(id) {
+    const res = await fetch(`${API_BASE}/recipes/${id}`, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async createRecipe(recipeData) {
+    const res = await fetch(`${API_BASE}/recipes`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(recipeData),
+    });
+    return handleResponse(res);
+  },
+
+  async updateRecipe(id, recipeData) {
+    const res = await fetch(`${API_BASE}/recipes/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(recipeData),
+    });
+    return handleResponse(res);
+  },
+
+  async deleteRecipe(id) {
+    const res = await fetch(`${API_BASE}/recipes/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async prepareRecipe(id, { targetPeople, notes = '' }) {
+    const res = await fetch(`${API_BASE}/recipes/${id}/prepare`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ targetPeople, notes }),
+    });
+    return handleResponse(res);
+  },
+
+  // Branch Orders & Indents
+  async getMyBranchOrder() {
+    const res = await fetch(`${API_BASE}/branch-orders/my-branch`, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async updateBranchRecurringOrder(data) {
+    const res = await fetch(`${API_BASE}/branch-orders/recurring`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+  },
+
+  async submitBranchSpecialEventOrder(data) {
+    const res = await fetch(`${API_BASE}/branch-orders/special-event`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+  },
+
+  async getAllBranchOrders() {
+    const res = await fetch(`${API_BASE}/branch-orders/all`, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async approveAndDeductBranchSpecialEvent(id) {
+    const res = await fetch(`${API_BASE}/branch-orders/special-event/${id}/approve-and-deduct`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  async rejectBranchSpecialEvent(id, reason) {
+    const res = await fetch(`${API_BASE}/branch-orders/special-event/${id}/reject`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ reason }),
+    });
+    return handleResponse(res);
+  },
+
+  async executeBranchDailyDeduct(data) {
+    const res = await fetch(`${API_BASE}/branch-orders/daily-deduct`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+  },
+
+  // Reports & Analytics (Head only)
+  async getReportAnalytics(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    const res = await fetch(`${API_BASE}/reports/analytics?${query}`, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse(res);
+  },
+
+  getReportCsvDownloadUrl(params = {}) {
+    const token = localStorage.getItem('rp_canteen_token') || localStorage.getItem('token') || '';
+    const query = new URLSearchParams({ ...params, ...(token ? { token } : {}) }).toString();
+    return `${API_BASE}/reports/export-csv?${query}`;
   },
 };

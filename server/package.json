@@ -10,6 +10,7 @@
     "seed": "node scripts/seedData.js",
     "clear": "node scripts/clearData.js",
     "init-head": "node scripts/initHeadAccount.js",
+    "update-costs": "node scripts/updateInventoryCosts.js",
     "test": "node scripts/testSuite.js"
   },
   "dependencies": {

@@ -130,6 +130,9 @@ router.post('/', authenticate, requireHead, async (req, res) => {
       initialQuantity = 0,
       unit,
       minThreshold = 5,
+      brand = '',
+      totalCost = 0,
+      unitPrice = 0,
       notes,
       expiryDate,
     } = req.body;
@@ -155,13 +158,28 @@ router.post('/', authenticate, requireHead, async (req, res) => {
 
     const numInitial = Math.max(0, Number(initialQuantity) || 0);
     const numThreshold = Math.max(0, Number(minThreshold) || 0);
+    let numTotalCost = Math.max(0, Number(totalCost) || 0);
+    let numUnitPrice = Math.max(0, Number(unitPrice) || 0);
+
+    // Auto-calculate unitPrice or totalCost if one is provided
+    if (numTotalCost > 0 && numInitial > 0 && numUnitPrice === 0) {
+      numUnitPrice = Number((numTotalCost / numInitial).toFixed(2));
+    } else if (numUnitPrice > 0 && numTotalCost === 0 && numInitial > 0) {
+      numTotalCost = Number((numUnitPrice * numInitial).toFixed(2));
+    }
+
+    // Vegetables do not carry brands; other goods can have a brand
+    const cleanBrand = category === 'Vegetables' ? '' : (brand || '').trim();
 
     const newItem = new Inventory({
       name: trimmedName,
       category,
+      brand: cleanBrand,
       currentQuantity: numInitial,
       unit,
       minThreshold: numThreshold,
+      totalCost: numTotalCost,
+      unitPrice: numUnitPrice,
       notes: notes || '',
       expiryDate: expiryDate ? new Date(expiryDate) : undefined,
     });
@@ -214,7 +232,7 @@ router.post('/', authenticate, requireHead, async (req, res) => {
 // @access  Protected (Head only)
 router.put('/:id', authenticate, requireHead, async (req, res) => {
   try {
-    const { name, category, unit, minThreshold, notes, expiryDate } = req.body;
+    const { name, category, unit, minThreshold, brand, totalCost, unitPrice, notes, expiryDate } = req.body;
 
     const item = await Inventory.findById(req.params.id);
     if (!item) {
@@ -237,8 +255,19 @@ router.put('/:id', authenticate, requireHead, async (req, res) => {
 
     if (category) item.category = category;
     if (unit) item.unit = unit;
+    if (item.category === 'Vegetables') {
+      item.brand = '';
+    } else if (brand !== undefined) {
+      item.brand = (brand || '').trim();
+    }
     if (minThreshold !== undefined) {
       item.minThreshold = Math.max(0, Number(minThreshold));
+    }
+    if (unitPrice !== undefined) {
+      item.unitPrice = Math.max(0, Number(unitPrice) || 0);
+    }
+    if (totalCost !== undefined) {
+      item.totalCost = Math.max(0, Number(totalCost) || 0);
     }
     if (notes !== undefined) item.notes = notes;
     if (expiryDate !== undefined) {

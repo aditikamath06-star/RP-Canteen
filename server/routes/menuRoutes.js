@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const Menu = require('../models/Menu');
 const { authenticate, requireHead, createAudit } = require('../middleware/auth');
 
@@ -11,17 +12,40 @@ const sanitizeMenuItems = (items) => {
     // If any item attempts to set vegetarian to false, reject or force true
     if (item.isVegetarian === false) {
       throw new Error(
-        `Item "${item.name || 'unnamed'}" cannot be non-vegetarian. RP Canteen is strictly 100% vegetarian.`
+        `Item "${item.name || item.nameEn || item.nameKn || 'unnamed'}" cannot be non-vegetarian. RP Canteen is strictly 100% vegetarian.`
       );
     }
 
+    const nameEn = (item.nameEn || (item.name && typeof item.name === 'object' ? item.name.en : '') || '').trim();
+    const nameKn = (item.nameKn || (item.name && typeof item.name === 'object' ? item.name.kn : '') || '').trim();
+    const fallbackName = typeof item.name === 'string' ? item.name.trim() : '';
+
+    const effectiveName = nameEn || nameKn || fallbackName || 'Unnamed Item';
+
+    const descEn = (item.descriptionEn || (item.description && typeof item.description === 'object' ? item.description.en : '') || '').trim();
+    const descKn = (item.descriptionKn || (item.description && typeof item.description === 'object' ? item.description.kn : '') || '').trim();
+    const fallbackDesc = typeof item.description === 'string' ? item.description.trim() : '';
+
     return {
-      name: item.name ? item.name.trim() : 'Unnamed Item',
+      name: effectiveName,
+      nameEn: nameEn || (fallbackName && !nameKn ? fallbackName : ''),
+      nameKn: nameKn || (fallbackName && !nameEn ? fallbackName : ''),
       category: item.category || 'Lunch',
-      description: item.description ? item.description.trim() : '',
+      description: fallbackDesc || descEn || descKn || '',
+      descriptionEn: descEn || (fallbackDesc && !descKn ? fallbackDesc : ''),
+      descriptionKn: descKn || (fallbackDesc && !descEn ? fallbackDesc : ''),
       imageUrl: item.imageUrl ? item.imageUrl.trim() : '',
+      feedback: item.feedback ? item.feedback.trim() : '',
+      customerFeedbacks: Array.isArray(item.customerFeedbacks) ? item.customerFeedbacks : [],
       isVegetarian: true,
       isAvailable: item.isAvailable !== false, // default true
+      wastage: item.wastage && typeof item.wastage === 'object' ? {
+        quantity: Math.max(0, Number(item.wastage.quantity) || 0),
+        unit: item.wastage.unit || 'kg',
+        reason: (item.wastage.reason || '').trim(),
+        recordedAt: item.wastage.recordedAt || (Number(item.wastage.quantity) > 0 ? new Date() : undefined),
+        recordedBy: item.wastage.recordedBy || '',
+      } : { quantity: 0, unit: 'kg', reason: '' },
       displayOrder: typeof item.displayOrder === 'number' ? item.displayOrder : idx,
     };
   });
@@ -53,6 +77,28 @@ router.get('/published', async (req, res) => {
     // Sort items by category order or displayOrder
     const sortedItems = [...menu.items].sort((a, b) => a.displayOrder - b.displayOrder);
 
+    // Check if an authenticated staff or head is requesting
+    let isStaff = false;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+      try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'rp_canteen_super_secure_jwt_secret_token_2026_dev');
+        if (decoded && (decoded.role === 'head' || decoded.role === 'worker')) {
+          isStaff = true;
+        }
+      } catch (e) {
+        // public visitor
+      }
+    }
+
+    const itemsToSend = sortedItems.map((item) => {
+      const obj = item.toObject ? item.toObject() : { ...item };
+      if (!isStaff) {
+        delete obj.wastage;
+      }
+      return obj;
+    });
+
     res.json({
       success: true,
       menu: {
@@ -62,7 +108,7 @@ router.get('/published', async (req, res) => {
         status: menu.status,
         publishedAt: menu.publishedAt,
         specialNote: menu.specialNote,
-        items: sortedItems,
+        items: itemsToSend,
       },
     });
   } catch (error) {
@@ -345,6 +391,61 @@ router.patch(
   }
 );
 
+// @route   PATCH /api/menus/:id/items/:itemId/wastage
+// @desc    Record or update food wastage for a prepared dish (Head of Canteen only)
+// @access  Protected (Head only)
+router.patch(
+  '/:id/items/:itemId/wastage',
+  authenticate,
+  requireHead,
+  async (req, res) => {
+    try {
+      const { quantity = 0, unit = 'kg', reason = '' } = req.body;
+      const menu = await Menu.findById(req.params.id);
+      if (!menu) {
+        return res.status(404).json({ success: false, message: 'Menu not found.' });
+      }
+
+      const item = menu.items.id(req.params.itemId);
+      if (!item) {
+        return res.status(404).json({ success: false, message: 'Dish item not found in this menu.' });
+      }
+
+      item.wastage = {
+        quantity: Math.max(0, Number(quantity) || 0),
+        unit: unit || 'kg',
+        reason: (reason || '').trim(),
+        recordedAt: new Date(),
+        recordedBy: req.user.fullName || req.user.username,
+      };
+
+      await menu.save();
+
+      await createAudit({
+        req,
+        action: 'MENU_WASTAGE_RECORD',
+        targetType: 'Menu',
+        targetId: menu._id,
+        details: {
+          dish: item.name || item.nameEn || item.nameKn,
+          date: menu.date,
+          wastage: item.wastage,
+        },
+      });
+
+      res.json({
+        success: true,
+        message: `Food wastage recorded for "${item.nameEn || item.nameKn || item.name}".`,
+        item,
+        menu,
+      });
+    } catch (error) {
+      console.error('[Record Wastage Error]:', error);
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+);
+
 // @route   DELETE /api/menus/:id
 // @desc    Delete a menu draft or obsolete menu (Head only)
 // @access  Protected (Head of Canteen only)
@@ -369,6 +470,51 @@ router.delete('/:id', authenticate, requireHead, async (req, res) => {
     res.json({
       success: true,
       message: `Menu for ${menuDate} has been removed.`,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// @route   POST /api/menus/:id/items/:itemId/feedback
+// @desc    Submit customer feedback and rating for a dish in a published menu (Public)
+// @access  Public
+router.post('/:id/items/:itemId/feedback', async (req, res) => {
+  try {
+    const { rating, comment, customerName } = req.body;
+    const numRating = Number(rating) || 5;
+
+    if (numRating < 1 || numRating > 5) {
+      return res.status(400).json({ success: false, message: 'Rating must be between 1 and 5 stars.' });
+    }
+
+    const menu = await Menu.findById(req.params.id);
+    if (!menu) {
+      return res.status(404).json({ success: false, message: 'Menu not found.' });
+    }
+
+    const item = menu.items.id(req.params.itemId);
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Dish not found in menu.' });
+    }
+
+    if (!Array.isArray(item.customerFeedbacks)) {
+      item.customerFeedbacks = [];
+    }
+
+    item.customerFeedbacks.push({
+      rating: numRating,
+      comment: (comment || '').trim(),
+      customerName: (customerName || 'Customer').trim(),
+      createdAt: new Date(),
+    });
+
+    await menu.save();
+
+    res.json({
+      success: true,
+      message: 'Thank you for your valuable feedback!',
+      customerFeedbacks: item.customerFeedbacks,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
