@@ -7,7 +7,7 @@ export const VegBadge = ({ showLabel = true, size = 'md' }) => {
   const labelText = isKn ? 'ಶುದ್ಧ ಸಸ್ಯಾಹಾರ' : 'PURE VEG';
 
   return (
-    <div className="veg-badge-box" title={isKn ? '೧೦೦% ಶುದ್ಧ ಸಾತ್ವಿಕ ಸಸ್ಯಾಹಾರ' : '100% Pure Sattvic Vegetarian'}>
+    <div className="veg-badge-box" title={isKn ? '೧೦೦% ಶುದ್ಧ ಸಸ್ಯಾಹಾರ' : '100% Pure Vegetarian'}>
       <span className="veg-icon" aria-label="Vegetarian"></span>
       {showLabel && <span>{labelText}</span>}
     </div>

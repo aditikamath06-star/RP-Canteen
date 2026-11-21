@@ -29,13 +29,10 @@ export const Footer = () => {
               </div>
             </div>
             <p style={{ lineHeight: '1.6', marginBottom: '1rem', color: '#cbd5e1' }}>
-              {t('footer.description', 'Serving fresh, authentic, sattvic pure vegetarian food for staffs and visitors of Rashtrotthana Parishath.')}
+              {t('footer.description', 'Serving fresh, authentic pure vegetarian food for staff and visitors of Rashtrotthana Parishath.')}
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.5rem' }}>
               <VegBadge showLabel={true} />
-              <span style={{ fontSize: '0.75rem', color: '#86efac' }}>
-                {t('footer.sattvicStandard', 'Strictly 100% Sattvic Vegetarian')}
-              </span>
             </div>
           </div>
 

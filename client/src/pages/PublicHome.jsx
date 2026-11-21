@@ -531,7 +531,7 @@ export const PublicHome = () => {
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🙏</div>
               <h4 style={{ color: '#15803d', marginBottom: '0.5rem' }}>{feedbackSuccessMsg}</h4>
               <p style={{ color: '#64748b', fontSize: '0.85rem' }}>
-                {t('home.pureVegGuarantee', '100% Sattvic Pure Vegetarian • Rashtrotthana Parishath')}
+                {t('home.pureVegGuarantee', 'Pure Vegetarian • Rashtrotthana Parishath')}
               </p>
             </div>
           ) : (
