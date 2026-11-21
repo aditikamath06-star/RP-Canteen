@@ -165,7 +165,7 @@ export const WorkerDashboard = () => {
           <div className="dashboard-title-group">
             <h2>{t('worker.welcome', 'Canteen Staff & Kitchen Portal')}</h2>
             <p>
-              {user?.fullName || user?.username} ({t('worker.roleTag', 'Kitchen Staff / Cook (Read-Only)')}) • {t('worker.institution', 'Rashtrotthana Parishath')}
+              {user?.fullName || user?.username} ({t('worker.roleTag', 'Kitchen Staff / Cook (Read-Only)')}) • {t('worker.institution', 'Rashtrotthana Parishat')}
             </p>
           </div>
 

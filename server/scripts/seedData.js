@@ -254,7 +254,7 @@ async function seedData() {
     // Today's Published Menu
     const todayMenu = new Menu({
       date: todayDate,
-      title: 'Rashtrotthana Parishath - Daily Sattvic Vegetarian Menu',
+      title: 'Rashtrotthana Parishat - Daily Vegetarian Menu',
       status: 'published',
       publishedAt: new Date(),
       specialNote: 'Prepared fresh daily with traditional recipes and pure ingredients.',

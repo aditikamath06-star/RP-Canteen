@@ -601,7 +601,7 @@ export const HeadDashboard = () => {
     setEditingMenu(null);
     setEditingDishIndex(null);
     setMenuFormDate(new Date().toISOString().split('T')[0]);
-    setMenuFormTitle('Rashtrotthana Parishath - Daily Vegetarian Menu');
+    setMenuFormTitle('Rashtrotthana Parishat - Daily Vegetarian Menu');
     setMenuFormNote('');
     setMenuFormStatus('draft');
     setMenuFormItems([]);
@@ -1436,7 +1436,7 @@ export const HeadDashboard = () => {
               )}
             </div>
             <p>
-              {user?.fullName?.replace(/\s*\(Head of Canteen\)/i, '') || user?.username} ({t('head.headTag', 'Head of Canteen (Administrator)')}) • {t('head.institution', 'Rashtrotthana Parishath')}
+              {user?.fullName?.replace(/\s*\(Head of Canteen\)/i, '') || user?.username} ({t('head.headTag', 'Head of Canteen (Administrator)')}) • {t('head.institution', 'Rashtrotthana Parishat')}
             </p>
           </div>
 

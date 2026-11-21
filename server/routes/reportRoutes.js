@@ -377,7 +377,7 @@ router.get('/export-csv', authenticate, requireHead, async (req, res) => {
 
     // Excel-compatible UTF-8 BOM
     let csv = '\uFEFF';
-    csv += `RASHTROTTHANA PARISHATH - CANTEEN MANAGEMENT AUDIT REPORT\n`;
+    csv += `RASHTROTTHANA PARISHAT - CANTEEN MANAGEMENT AUDIT REPORT\n`;
     csv += `Period,${startStr} to ${endStr} (${timeframe.toUpperCase()})\n`;
     csv += `Generated On,${new Date().toLocaleString()}\n\n`;
 

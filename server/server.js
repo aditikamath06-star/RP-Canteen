@@ -53,7 +53,7 @@ app.get('/api/health', (req, res) => {
 
   res.json({
     status: 'ok',
-    institution: 'Rashtrotthana Parishath',
+    institution: 'Rashtrotthana Parishat',
     application: 'RP Canteen Web Service',
     database: {
       status: dbStatus,
@@ -86,7 +86,7 @@ if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`================================================================`);
     console.log(`RP Canteen API Server running on port ${PORT}`);
-    console.log(`Institution: Rashtrotthana Parishath`);
+    console.log(`Institution: Rashtrotthana Parishat`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Health check: http://localhost:${PORT}/api/health`);
     console.log(`================================================================`);

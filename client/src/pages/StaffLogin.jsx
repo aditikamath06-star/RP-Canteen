@@ -178,7 +178,7 @@ export const StaffLogin = () => {
           <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
             <img
               src="/rp_logo.jpeg"
-              alt="Rashtrotthana Parishath Logo"
+              alt="Rashtrotthana Parishat Logo"
               className="rp-logo-img large"
               style={{ margin: '0 auto 0.75rem', display: 'block' }}
             />
@@ -186,7 +186,7 @@ export const StaffLogin = () => {
               {t('login.title', 'Authorised Staff & Branch Login')}
             </h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
-              {t('login.subtitle', 'RP Canteen • Rashtrotthana Parishath')}
+              {t('login.subtitle', 'RP Canteen • Rashtrotthana Parishat')}
             </p>
           </div>
 

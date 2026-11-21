@@ -1,7 +1,7 @@
  {
   "nav": {
     "title": "RP Canteen",
-    "subtitle": "Rashtrotthana Parishath",
+    "subtitle": "Rashtrotthana Parishat",
     "menu": "Menu",
     "headDashboard": "Head Dashboard",
     "staffDashboard": "Staff Dashboard",
@@ -14,7 +14,7 @@
     "dark": "Dark"
   },
   "footer": {
-    "description": "Exclusively serving fresh, pure vegetarian food for customers, staff, and visitors of Rashtrotthana Parishath.",
+    "description": "Exclusively serving fresh, pure vegetarian food for customers, staff, and visitors of Rashtrotthana Parishat.",
     "timings": "Timings & Meal Service",
     "breakfastTime": "Breakfast: 08:00 AM – 09:00 AM",
     "lunchTime": "Lunch: 12:30 PM – 02:00 PM",
@@ -24,13 +24,13 @@
     "sattvicStandard": "Strictly 100% Pure Vegetarian",
     "zeroPricePolicy": "Zero Commercial Food Prices",
     "hygieneStandard": "Traditional Kitchen Hygiene Standards",
-    "copyright": "Rashtrotthana Parishath. All rights reserved.",
+    "copyright": "Rashtrotthana Parishat. All rights reserved.",
     "servingCommunity": "Serving the community with purity and devotion."
   },
   "home": {
-    "institutionBadge": "Rashtrotthana Parishath",
+    "institutionBadge": "Rashtrotthana Parishat",
     "heroTitle": "Welcome to RP Canteen",
-    "heroSubtitle": "Your Daily Canteen Menu at Rashtrotthana Parishath",
+    "heroSubtitle": "Your Daily Canteen Menu at Rashtrotthana Parishat",
     "todayBadge": "TODAY",
     "todaysMenu": "Today's Menu",
     "selectDate": "Select menu date",
@@ -82,7 +82,7 @@
   },
   "login": {
     "title": "Authorised Staff Login",
-    "subtitle": "RP Canteen • Rashtrotthana Parishath",
+    "subtitle": "RP Canteen • Rashtrotthana Parishat",
     "usernameOrEmail": "Username or Email",
     "usernamePlaceholder": "Enter staff username or email",
     "password": "Password",
@@ -97,7 +97,7 @@
   "worker": {
     "welcome": "Canteen Staff & Kitchen Portal",
     "roleTag": "Kitchen Staff / Cook (Read-Only)",
-    "institution": "Rashtrotthana Parishath",
+    "institution": "Rashtrotthana Parishat",
     "tabInventory": "Ingredient Inventory",
     "tabMovements": "Stock Movement History",
     "tabRecipes": "Recipes & Prep Sheets",
@@ -144,7 +144,7 @@
   "head": {
     "portalTitle": "Head of Canteen Management Portal",
     "headTag": "Head of Canteen (Administrator)",
-    "institution": "Rashtrotthana Parishath",
+    "institution": "Rashtrotthana Parishat",
     "tabInventory": "Inventory Management",
     "tabMovements": "Stock Movement History",
     "tabRecipes": "Recipes & Food Preparation",

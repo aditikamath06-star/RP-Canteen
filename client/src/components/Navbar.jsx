@@ -25,12 +25,12 @@ export const Navbar = () => {
         <Link to="/" className="rp-logo" aria-label="RP Canteen Home">
           <img
             src="/rp_logo.jpeg"
-            alt="Rashtrotthana Parishath Logo"
+            alt="Rashtrotthana Parishat Logo"
             className="rp-logo-img"
           />
           <div className="rp-logo-text">
             <span className="rp-logo-title">{t('nav.title', 'RP Canteen')}</span>
-            <span className="rp-logo-subtitle">{t('nav.subtitle', 'Rashtrotthana Parishath')}</span>
+            <span className="rp-logo-subtitle">{t('nav.subtitle', 'Rashtrotthana Parishat')}</span>
           </div>
         </Link>
 

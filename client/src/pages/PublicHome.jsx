@@ -211,13 +211,13 @@ export const PublicHome = () => {
         <div className="container hero-content">
           <div className="hero-institution-badge">
             <Sparkles size={15} />
-            {t('home.institutionBadge', 'Rashtrotthana Parishath')}
+            {t('home.institutionBadge', 'Rashtrotthana Parishat')}
           </div>
 
           <h1 className="hero-title">{t('home.heroTitle', 'Welcome to RP Canteen')}</h1>
 
           <p className="hero-subtitle">
-            {t('home.heroSubtitle', 'Your Daily Canteen Menu at Rashtrotthana Parishath')}
+            {t('home.heroSubtitle', 'Your Daily Canteen Menu at Rashtrotthana Parishat')}
           </p>
 
           <div className="hero-date-card">
@@ -531,7 +531,7 @@ export const PublicHome = () => {
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🙏</div>
               <h4 style={{ color: '#15803d', marginBottom: '0.5rem' }}>{feedbackSuccessMsg}</h4>
               <p style={{ color: '#64748b', fontSize: '0.85rem' }}>
-                {t('home.pureVegGuarantee', 'Pure Vegetarian • Rashtrotthana Parishath')}
+                {t('home.pureVegGuarantee', 'Pure Vegetarian • Rashtrotthana Parishat')}
               </p>
             </div>
           ) : (

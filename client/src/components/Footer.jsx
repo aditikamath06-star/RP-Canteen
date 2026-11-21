@@ -16,7 +16,7 @@ export const Footer = () => {
             <div className="rp-logo" style={{ marginBottom: '1rem' }}>
               <img
                 src="/rp_logo.jpeg"
-                alt="Rashtrotthana Parishath Logo"
+                alt="Rashtrotthana Parishat Logo"
                 className="rp-logo-img"
               />
               <div className="rp-logo-text">
@@ -24,12 +24,12 @@ export const Footer = () => {
                   {t('nav.title', 'RP Canteen')}
                 </span>
                 <span className="rp-logo-subtitle" style={{ color: '#94a3b8' }}>
-                  {t('nav.subtitle', 'Rashtrotthana Parishath')}
+                  {t('nav.subtitle', 'Rashtrotthana Parishat')}
                 </span>
               </div>
             </div>
             <p style={{ lineHeight: '1.6', marginBottom: '1rem', color: '#cbd5e1' }}>
-              {t('footer.description', 'Serving fresh, authentic pure vegetarian food for staff and visitors of Rashtrotthana Parishath.')}
+              {t('footer.description', 'Serving fresh, authentic pure vegetarian food for staff and visitors of Rashtrotthana Parishat.')}
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.5rem' }}>
               <VegBadge showLabel={true} />
@@ -72,7 +72,7 @@ export const Footer = () => {
             </ul>
             <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#64748b' }}>
               <MapPin size={14} style={{ display: 'inline', marginRight: '4px' }} />
-              Rashtrotthana Parishath, Bengaluru, Karnataka
+              Rashtrotthana Parishat, Bengaluru, Karnataka
             </div>
           </div>
         </div>
@@ -80,7 +80,7 @@ export const Footer = () => {
         {/* Footer Bottom Bar */}
         <div className="footer-bottom">
           <div>
-            © {new Date().getFullYear()} {t('footer.copyright', 'Rashtrotthana Parishath. All rights reserved.')}
+            © {new Date().getFullYear()} {t('footer.copyright', 'Rashtrotthana Parishat. All rights reserved.')}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#94a3b8' }}>
             <span>{t('footer.servingCommunity', 'Serving the community with purity and devotion.')}</span>
