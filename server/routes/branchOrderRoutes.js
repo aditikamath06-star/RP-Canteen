@@ -266,15 +266,40 @@ router.post('/special-event/:id/approve-and-deduct', authenticate, requireRole('
     if (!order || order.orderType !== 'special_event') {
       return res.status(404).json({ success: false, message: 'Special event order not found.' });
     }
-    if (order.status === 'stock_deducted') {
-      return res.status(400).json({ success: false, message: 'Stock has already been deducted for this event order.' });
+    if (order.status === 'approved' || order.status === 'stock_deducted') {
+      return res.status(400).json({ success: false, message: 'This event order has already been approved.' });
     }
 
-    const { eventName, peopleCount, requestedDishes } = order.specialEvent;
-    const targetPeople = Number(peopleCount);
+    const { eventName, peopleCount } = order.specialEvent;
 
-    // Aggregate required ingredients from recipe formulas
-    const ingredientRequirements = new Map(); // itemId -> { inventoryItem, itemName, neededQty, unit }
+    // DIRECT APPROVAL (Manual stock deduction policy for real-world kitchen accuracy)
+    order.status = 'approved';
+    order.approvalDetails = order.approvalDetails || {};
+    order.approvalDetails.approvedBy = req.user._id;
+    order.approvalDetails.approvedAt = new Date();
+    await order.save();
+
+    await createAudit(
+      req.user._id,
+      `${req.user.fullName || req.user.username} (Head of Canteen)`,
+      'head',
+      'APPROVE_BRANCH_SPECIAL_ORDER',
+      'BranchOrder',
+      order._id.toString(),
+      { eventName, peopleCount: Number(peopleCount), status: 'approved' },
+      `Approved special event order "${eventName}" for ${peopleCount} attendees from ${order.branchNameEn}`
+    );
+
+    return res.json({
+      success: true,
+      message: `Special event order "${eventName}" approved successfully for ${peopleCount} people! Kitchen staff can record physical ingredient consumption manually.`,
+      order,
+    });
+
+    /* PRESERVED: Automatic recipe-based stock deduction algorithm (can be re-enabled anytime)
+    const targetPeople = Number(peopleCount);
+    const ingredientRequirements = new Map();
+    ...
 
     for (const reqDish of requestedDishes) {
       let recipe = null;
@@ -437,6 +462,7 @@ router.post('/special-event/:id/approve-and-deduct', authenticate, requireRole('
       order,
       deductions: recordedDeductions,
     });
+    */
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

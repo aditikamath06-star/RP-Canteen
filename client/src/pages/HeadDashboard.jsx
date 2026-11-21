@@ -1265,7 +1265,9 @@ export const HeadDashboard = () => {
   const handleApproveSpecialEvent = async (order) => {
     if (
       !window.confirm(
-        `Approve special event order "${order.specialEvent.eventName}" and auto-deduct stock for ${order.specialEvent.peopleCount} people?`
+        currentLang === 'kn'
+          ? `"${order.specialEvent.eventName}" ಸಮಾರಂಭದ ಆದೇಶವನ್ನು ${order.specialEvent.peopleCount} ಜನರಿಗಾಗಿ ಅನುಮೋದಿಸಬೇಕೆ?`
+          : `Approve special event order "${order.specialEvent.eventName}" for ${order.specialEvent.peopleCount} people?`
       )
     ) {
       return;
@@ -1456,6 +1458,7 @@ export const HeadDashboard = () => {
             >
               <History size={16} /> {t('head.tabMovements', 'Stock Movements')}
             </button>
+            {/* PRESERVED: Food Prep & Recipes Tab (can be uncommented anytime)
             <button
               type="button"
               className={`dashboard-tab-btn ${activeTab === 'recipes' ? 'active' : ''}`}
@@ -1463,6 +1466,7 @@ export const HeadDashboard = () => {
             >
               <CookingPot size={16} /> {t('head.tabRecipes', 'Food Prep & Recipes')}
             </button>
+            */}
             <button
               type="button"
               className={`dashboard-tab-btn ${activeTab === 'branches' ? 'active' : ''}`}
@@ -1918,9 +1922,9 @@ export const HeadDashboard = () => {
         )}
 
         {/* =========================================================================
-            TAB 2B: RECIPES & FOOD PREPARATION AUTO-DEDUCTION
+            PRESERVED: TAB 2B: RECIPES & FOOD PREPARATION AUTO-DEDUCTION (change false to true to re-enable)
             ========================================================================= */}
-        {activeTab === 'recipes' && (
+        {false && activeTab === 'recipes' && (
           <div>
             <div
               style={{
@@ -2268,6 +2272,8 @@ export const HeadDashboard = () => {
             </div>
 
             {/* 1-Click Action Card: Auto-Deduct Today's Stock for Branches */}
+            {/* PRESERVED: 1-Click Auto-Deduct Stock for Today's Branch Food Requirements (change false to true to re-enable) */}
+            {false && (
             <div
               style={{
                 background: '#f0fdf4',
@@ -2332,6 +2338,7 @@ export const HeadDashboard = () => {
                 </button>
               </div>
             </div>
+            )}
 
             {/* Table 1: Standing Daily Headcounts for All 4 Branches */}
             <div
@@ -2567,9 +2574,9 @@ export const HeadDashboard = () => {
                                       className="btn btn-primary btn-sm"
                                       style={{ padding: '3px 8px', fontSize: '0.75rem' }}
                                       onClick={() => handleApproveSpecialEvent(order)}
-                                      title="Approve and auto-deduct stock"
+                                      title={currentLang === 'kn' ? 'ಸಮಾರಂಭದ ಆದೇಶವನ್ನು ಅನುಮೋದಿಸಿ' : 'Approve special event order'}
                                     >
-                                      Approve & Deduct
+                                      {currentLang === 'kn' ? 'ಅನುಮೋದಿಸಿ' : 'Approve'}
                                     </button>
                                     <button
                                       type="button"

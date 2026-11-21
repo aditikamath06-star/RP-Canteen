@@ -185,6 +185,7 @@ export const WorkerDashboard = () => {
             >
               <History size={16} /> {t('worker.tabMovements', 'Stock Movement History')}
             </button>
+            {/* PRESERVED: Recipes Tab (can be uncommented anytime)
             <button
               type="button"
               className={`dashboard-tab-btn ${activeTab === 'recipes' ? 'active' : ''}`}
@@ -192,6 +193,7 @@ export const WorkerDashboard = () => {
             >
               <CookingPot size={16} /> {t('worker.tabRecipes', 'Recipes & Prep Sheets')}
             </button>
+            */}
             <button
               type="button"
               className={`dashboard-tab-btn ${activeTab === 'published_menu' ? 'active' : ''}`}
@@ -586,8 +588,10 @@ export const WorkerDashboard = () => {
           </div>
         )}
 
-        {/* TAB 2B: RECIPES & PREPARATION SHEETS (READ-ONLY) */}
-        {activeTab === 'recipes' && (
+        {/* =========================================================================
+            PRESERVED: TAB 2B: RECIPES & PREPARATION SHEETS (change false to true to re-enable)
+            ========================================================================= */}
+        {false && activeTab === 'recipes' && (
           <div>
             <div
               style={{

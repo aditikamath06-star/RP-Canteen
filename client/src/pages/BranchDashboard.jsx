@@ -53,6 +53,7 @@ export const BranchDashboard = () => {
     eventDate: new Date().toISOString().split('T')[0],
     mealSession: 'Lunch',
     peopleCount: 50,
+    requestedMenuText: '',
     selectedRecipeIds: [],
     specialInstructions: '',
   });
@@ -156,19 +157,33 @@ export const BranchDashboard = () => {
       showNotification('Please enter the event name.', true);
       return;
     }
-    if (eventForm.selectedRecipeIds.length === 0) {
-      showNotification('Please select at least one dish for the event.', true);
+    const menuRaw = (eventForm.requestedMenuText || '').trim();
+    if (!menuRaw && eventForm.selectedRecipeIds.length === 0) {
+      showNotification(
+        currentLang === 'kn'
+          ? 'ದಯವಿಟ್ಟು ಸಮಾರಂಭಕ್ಕಾಗಿ ಅಗತ್ಯವಿರುವ ಖಾದ್ಯಗಳನ್ನು ನಮೂದಿಸಿ.'
+          : 'Please enter the requested dishes/menu for the event.',
+        true
+      );
       return;
     }
 
-    const selectedDishes = eventForm.selectedRecipeIds.map((id) => {
-      const rec = availableRecipes.find((r) => r._id === id);
-      return {
-        recipeId: id,
-        dishName: rec ? rec.dishName : 'Dish',
-        dishNameKn: rec ? rec.dishNameKn : '',
-      };
-    });
+    let selectedDishes = [];
+    if (menuRaw) {
+      selectedDishes = menuRaw
+        .split(/[,;\n]+/)
+        .map((d) => ({ dishName: d.trim() }))
+        .filter((d) => d.dishName.length > 0);
+    } else {
+      selectedDishes = eventForm.selectedRecipeIds.map((id) => {
+        const rec = availableRecipes.find((r) => r._id === id);
+        return {
+          recipeId: id,
+          dishName: rec ? rec.dishName : 'Dish',
+          dishNameKn: rec ? rec.dishNameKn : '',
+        };
+      });
+    }
 
     setSubmittingEvent(true);
     try {
@@ -190,6 +205,7 @@ export const BranchDashboard = () => {
           eventDate: new Date().toISOString().split('T')[0],
           mealSession: 'Lunch',
           peopleCount: 50,
+          requestedMenuText: '',
           selectedRecipeIds: [],
           specialInstructions: '',
         });
@@ -887,8 +903,34 @@ export const BranchDashboard = () => {
                 </div>
               </div>
 
-              {/* Dish Selection Checklist with Search */}
-              <div style={{ marginBottom: '1rem' }}>
+              {/* Flexible Food / Menu Requested Textarea */}
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label className="form-label" style={{ fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>🍛</span>
+                  {currentLang === 'kn' ? 'ಅಗತ್ಯವಿರುವ ಖಾದ್ಯಗಳು / ಮೆನು *' : 'Food / Menu Requested *'}
+                </label>
+                <textarea
+                  className="form-textarea"
+                  rows="3"
+                  value={eventForm.requestedMenuText}
+                  onChange={(e) => setEventForm({ ...eventForm, requestedMenuText: e.target.value })}
+                  placeholder={
+                    currentLang === 'kn'
+                      ? 'ಉದಾಹರಣೆಗೆ: ಬಿಸಿಬೇಳೆ ಬಾತ್, ಖಾರಾ ಬೂಂದಿ, ಮೊಸರು ವಡೆ, ಮತ್ತು ಫಿಲ್ಟರ್ ಕಾಫಿ'
+                      : 'e.g. Bisibelebath, Kara Boondi, Curd Vada, and Filter Coffee'
+                  }
+                  required
+                />
+                <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', marginTop: '4px' }}>
+                  {currentLang === 'kn'
+                    ? 'ನಿಮ್ಮ ಸಮಾರಂಭಕ್ಕೆ ಬೇಕಾದ ಯಾವುದೇ ತಿನಿಸುಗಳನ್ನು ಮುಕ್ತವಾಗಿ ನಮೂದಿಸಿ (ಅಲ್ಪವಿರಾಮದಿಂದ ಬೇರ್ಪಡಿಸಿ).'
+                    : 'Type any requested dishes freely for this function (separate items with commas or new lines).'}
+                </span>
+              </div>
+
+              {/* PRESERVED: Master Recipe Catalog Selection Checklist (change false to true to re-enable) */}
+              {false && (
+                <div style={{ marginBottom: '1rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                   <label className="form-label" style={{ margin: 0, fontWeight: '600' }}>
                     {currentLang === 'kn' ? 'ಸಮಾರಂಭಕ್ಕಾಗಿ ಖಾದ್ಯಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ *' : 'Select Dishes for Function *'}{' '}
@@ -1085,6 +1127,7 @@ export const BranchDashboard = () => {
                   )}
                 </div>
               </div>
+              )}
 
               {/* Special Instructions */}
               <div style={{ marginBottom: '1.5rem' }}>
