@@ -10,7 +10,7 @@ const BRANCH_ACCOUNTS = [
   {
     username: 'headoffice',
     email: 'headoffice@rashtrotthana.org',
-    fullName: 'Rashtrotthana Head Office (ಪ್ರಧಾನ ಕಚೇರಿ)',
+    fullName: 'Rashtrotthana Head Office',
     password: 'Branch@HO2026',
     role: 'branch',
     branchId: 'head_office',
@@ -20,7 +20,7 @@ const BRANCH_ACCOUNTS = [
   {
     username: 'mudranalaya',
     email: 'mudranalaya@rashtrotthana.org',
-    fullName: 'Rashtrotthana Mudranalaya (ಮುದ್ರಣಾಲಯ)',
+    fullName: 'Rashtrotthana Mudranalaya',
     password: 'Branch@Press2026',
     role: 'branch',
     branchId: 'mudranalaya',
@@ -30,7 +30,7 @@ const BRANCH_ACCOUNTS = [
   {
     username: 'bloodbank',
     email: 'bloodbank@rashtrotthana.org',
-    fullName: 'Rashtrotthana Blood Centre (ರಕ್ತನಿಧಿ)',
+    fullName: 'Rashtrotthana Blood Centre',
     password: 'Branch@BB2026',
     role: 'branch',
     branchId: 'blood_bank',
@@ -40,7 +40,7 @@ const BRANCH_ACCOUNTS = [
   {
     username: 'samraksha',
     email: 'samraksha@rashtrotthana.org',
-    fullName: 'Samraksha Thalassemia Centre (ಸಂರಕ್ಷಾ)',
+    fullName: 'Samraksha Thalassemia Centre',
     password: 'Branch@Samraksha2026',
     role: 'branch',
     branchId: 'samraksha',
@@ -50,7 +50,7 @@ const BRANCH_ACCOUNTS = [
   {
     username: 'ashtangayoga',
     email: 'yoga@rashtrotthana.org',
-    fullName: 'Rashtrotthana Ashtanga Yoga (ಅಷ್ಟಾಂಗ ಯೋಗ)',
+    fullName: 'Rashtrotthana Ashtanga Yoga',
     password: 'Branch@Yoga2026',
     role: 'branch',
     branchId: 'ashtanga_yoga',

@@ -255,6 +255,12 @@
   border: 1px solid var(--border-color);
 }
 
+[data-theme="dark"] .role-pill[data-role="branch"] {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
 [data-theme="dark"] .code-pill {
   background: var(--bg-surface-elevated);
   color: var(--text-main);
@@ -1297,6 +1303,12 @@ input, select, textarea {
   background: var(--bg-subtle);
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
+}
+
+.role-pill[data-role="branch"] {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
 }
 
 .code-pill {

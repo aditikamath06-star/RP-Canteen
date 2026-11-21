@@ -2819,18 +2819,28 @@ export const HeadDashboard = () => {
                   <tbody>
                     {staffList.map((member) => (
                       <tr key={member._id}>
-                        <td><strong>{member.fullName}</strong></td>
+                        <td>
+                          <strong style={{ color: 'var(--text-main)' }}>
+                            {currentLang === 'kn' && member.branchNameKn
+                              ? member.branchNameKn
+                              : (member.fullName || '').replace(/\s*\([^)]*[\u0C80-\u0CFF][^)]*\)/g, '').trim()}
+                          </strong>
+                        </td>
                         <td>{member.username}</td>
-                        <td style={{ color: '#64748b' }}>{member.email}</td>
+                        <td style={{ color: 'var(--text-secondary)' }}>{member.email}</td>
                         <td>
                           <span className="role-pill" data-role={member.role}>
-                            {member.role === 'head' ? t('head.headRole', 'HEAD OF CANTEEN') : t('head.workerRole', 'CANTEEN STAFF')}
+                            {member.role === 'head'
+                              ? t('head.headRole', 'HEAD OF CANTEEN')
+                              : member.role === 'branch'
+                              ? (currentLang === 'kn' ? 'ಶಾಖಾ ಘಟಕ' : 'BRANCH UNIT')
+                              : t('head.workerRole', 'CANTEEN STAFF')}
                           </span>
                         </td>
                         <td>
                           <span
                             style={{
-                              color: member.isActive ? '#15803d' : '#dc2626',
+                              color: member.isActive ? 'var(--status-instock, #15803d)' : 'var(--status-outofstock, #dc2626)',
                               fontWeight: '600',
                               fontSize: '0.85rem',
                             }}
@@ -2838,7 +2848,7 @@ export const HeadDashboard = () => {
                             {member.isActive ? t('head.active', 'Active') : t('head.inactive', 'Deactivated')}
                           </span>
                         </td>
-                        <td style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                        <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                           {member.lastLogin
                             ? new Date(member.lastLogin).toLocaleString(currentLang === 'kn' ? 'kn-IN' : 'en-IN', {
                                 day: '2-digit',
