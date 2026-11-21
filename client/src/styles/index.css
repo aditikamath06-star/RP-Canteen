@@ -356,7 +356,13 @@
 }
 
 [data-theme="dark"] [style*="color: #0f172a"],
-[data-theme="dark"] [style*="color:#0f172a"] {
+[data-theme="dark"] [style*="color:#0f172a"],
+[data-theme="dark"] [style*="color: rgb(15, 23, 42)"],
+[data-theme="dark"] [style*="color:rgb(15, 23, 42)"],
+[data-theme="dark"] [style*="color: #1e293b"],
+[data-theme="dark"] [style*="color:#1e293b"],
+[data-theme="dark"] [style*="color: rgb(30, 41, 59)"],
+[data-theme="dark"] [style*="color:rgb(30, 41, 59)"] {
   color: #f1f5f9 !important;
 }
 

@@ -2202,10 +2202,10 @@ export const HeadDashboard = () => {
                   <Building2 size={24} />
                 </div>
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: '800', margin: 0, color: '#0f172a' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: '800', margin: 0, color: 'var(--text-main)' }}>
                     {currentLang === 'kn' ? 'ಶಾಖಾ ಊಟದ ಬೇಡಿಕೆಗಳು ಮತ್ತು ಸಮಾರಂಭದ ಆದೇಶಗಳು' : 'Branch Food Indents & Function Orders'}
                   </h2>
-                  <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>
+                  <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                     {currentLang === 'kn'
                       ? 'ಪ್ರಧಾನ ಕಚೇರಿ, ಮುದ್ರಣಾಲಯ, ರಕ್ತನಿಧಿ, ಸಂರಕ್ಷಾ ಮತ್ತು ಅಷ್ಟಾಂಗ ಯೋಗ ಶಾಖೆಗಳ ಕೇಂದ್ರೀಕೃತ ಊಟದ ಬೇಡಿಕೆಗಳು ಹಾಗೂ ಸ್ವಯಂಚಾಲಿತ ದಾಸ್ತಾನು ಕಡಿತ.'
                       : 'Central food requirements from Head Office, Mudranalaya, Blood Bank, Samraksha & Ashtanga Yoga with automated stock deduction.'}
@@ -2234,39 +2234,39 @@ export const HeadDashboard = () => {
                 marginBottom: '1.5rem',
               }}
             >
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
-                <div style={{ color: '#b45309', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
+              <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                <div style={{ color: '#f59e0b', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
                   🌅 Today's Breakfast Total
                 </div>
-                <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#1e293b' }}>
-                  {branchOrdersData.todaySummary?.breakfastTotal || 0} <span style={{ fontSize: '0.85rem', fontWeight: 'normal', color: '#64748b' }}>people</span>
+                <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--text-main)' }}>
+                  {branchOrdersData.todaySummary?.breakfastTotal || 0} <span style={{ fontSize: '0.85rem', fontWeight: 'normal', color: 'var(--text-secondary)' }}>people</span>
                 </div>
               </div>
 
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
-                <div style={{ color: '#15803d', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
+              <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                <div style={{ color: 'var(--status-instock)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
                   🍛 Today's Lunch Total
                 </div>
-                <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#1e293b' }}>
-                  {branchOrdersData.todaySummary?.lunchTotal || 0} <span style={{ fontSize: '0.85rem', fontWeight: 'normal', color: '#64748b' }}>people</span>
+                <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--text-main)' }}>
+                  {branchOrdersData.todaySummary?.lunchTotal || 0} <span style={{ fontSize: '0.85rem', fontWeight: 'normal', color: 'var(--text-secondary)' }}>people</span>
                 </div>
               </div>
 
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
-                <div style={{ color: '#7c3aed', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
+              <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                <div style={{ color: '#a855f7', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
                   ☕ Today's Evening Snacks
                 </div>
-                <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#1e293b' }}>
-                  {branchOrdersData.todaySummary?.snacksTotal || 0} <span style={{ fontSize: '0.85rem', fontWeight: 'normal', color: '#64748b' }}>people</span>
+                <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--text-main)' }}>
+                  {branchOrdersData.todaySummary?.snacksTotal || 0} <span style={{ fontSize: '0.85rem', fontWeight: 'normal', color: 'var(--text-secondary)' }}>people</span>
                 </div>
               </div>
 
-              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
-                <div style={{ color: '#0369a1', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
+              <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                <div style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', marginBottom: '4px' }}>
                   🏢 Active Branch Units
                 </div>
-                <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#1e293b' }}>
-                  {branchOrdersData.todaySummary?.activeBranchesCount || 0} / 4 <span style={{ fontSize: '0.85rem', fontWeight: 'normal', color: '#64748b' }}>units</span>
+                <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--text-main)' }}>
+                  {branchOrdersData.todaySummary?.activeBranchesCount || 0} / {(branchOrdersData.recurringOrders || []).length || 5} <span style={{ fontSize: '0.85rem', fontWeight: 'normal', color: 'var(--text-secondary)' }}>units</span>
                 </div>
               </div>
             </div>
@@ -2340,11 +2340,11 @@ export const HeadDashboard = () => {
             </div>
             )}
 
-            {/* Table 1: Standing Daily Headcounts for All 4 Branches */}
+            {/* Table 1: Standing Daily Headcounts for All Branches */}
             <div
               style={{
-                background: '#ffffff',
-                border: '1px solid #e2e8f0',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-color)',
                 borderRadius: '16px',
                 padding: '1.5rem',
                 marginBottom: '1.5rem',
@@ -2352,10 +2352,10 @@ export const HeadDashboard = () => {
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#0f172a' }}>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>
                   {currentLang === 'kn' ? 'ಶಾಖೆಗಳ ದೈನಂದಿನ ಖಾಯಂ ಊಟದ ಬೇಡಿಕೆ' : 'Branch Standing Daily Meal Headcounts'}
                 </h3>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
                   {currentLang === 'kn'
                     ? 'ಶಾಖೆಗಳು ತಮ್ಮ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಇದನ್ನು ಯಾವಾಗ ಬೇಕಾದರೂ ನವೀಕರಿಸಬಹುದು'
                     : 'Branches can update these anytime in their branch portal'}
@@ -2385,15 +2385,15 @@ export const HeadDashboard = () => {
                       return (
                         <tr key={order._id}>
                           <td>
-                            <div style={{ fontWeight: '700', color: '#1e293b' }}>
+                            <div style={{ fontWeight: '700', color: 'var(--text-main)' }}>
                               {currentLang === 'kn' && order.branchNameKn ? order.branchNameKn : order.branchNameEn}
                             </div>
                           </td>
                           <td>
                             <span
                               style={{
-                                background: dr.isActive ? '#dcfce7' : '#fee2e2',
-                                color: dr.isActive ? '#15803d' : '#dc2626',
+                                background: dr.isActive ? 'var(--veg-green-bg, #dcfce7)' : 'var(--status-outofstock-bg, #fee2e2)',
+                                color: dr.isActive ? 'var(--status-instock, #15803d)' : 'var(--status-outofstock, #dc2626)',
                                 padding: '2px 8px',
                                 borderRadius: '12px',
                                 fontWeight: '700',
@@ -2405,11 +2405,11 @@ export const HeadDashboard = () => {
                                 : (currentLang === 'kn' ? 'ಸ್ಥಗಿತ' : 'Paused')}
                             </span>
                           </td>
-                          <td style={{ fontWeight: '600' }}>{dr.breakfastCount || 0}</td>
-                          <td style={{ fontWeight: '700', color: '#15803d' }}>{dr.lunchCount || 0}</td>
-                          <td style={{ fontWeight: '600' }}>{dr.snacksCount || 0}</td>
-                          <td style={{ fontWeight: '600' }}>{dr.dinnerCount || 0}</td>
-                          <td style={{ color: '#64748b', fontSize: '0.8rem' }}>{dr.notes || '—'}</td>
+                          <td style={{ fontWeight: '600', color: 'var(--text-main)' }}>{dr.breakfastCount || 0}</td>
+                          <td style={{ fontWeight: '700', color: 'var(--status-instock)' }}>{dr.lunchCount || 0}</td>
+                          <td style={{ fontWeight: '600', color: 'var(--text-main)' }}>{dr.snacksCount || 0}</td>
+                          <td style={{ fontWeight: '600', color: 'var(--text-main)' }}>{dr.dinnerCount || 0}</td>
+                          <td style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{dr.notes || '—'}</td>
                           <td>
                             {todayDeductions.length > 0 ? (
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
@@ -2417,8 +2417,8 @@ export const HeadDashboard = () => {
                                   <span
                                     key={tdi}
                                     style={{
-                                      background: '#dcfce7',
-                                      color: '#15803d',
+                                      background: 'var(--veg-green-bg, #dcfce7)',
+                                      color: 'var(--status-instock, #15803d)',
                                       fontSize: '0.7rem',
                                       padding: '1px 6px',
                                       borderRadius: '8px',
@@ -2430,7 +2430,7 @@ export const HeadDashboard = () => {
                                 ))}
                               </div>
                             ) : (
-                              <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Pending</span>
+                              <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Pending</span>
                             )}
                           </td>
                         </tr>
@@ -2444,8 +2444,8 @@ export const HeadDashboard = () => {
             {/* Table 2: Special Occasion / Function Requests Queue */}
             <div
               style={{
-                background: '#ffffff',
-                border: '1px solid #e2e8f0',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-color)',
                 borderRadius: '16px',
                 padding: '1.5rem',
                 boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
@@ -2453,10 +2453,10 @@ export const HeadDashboard = () => {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: '#0f172a' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>
                     Special Function & Event Requests (ವಿಶೇಷ ಸಮಾರಂಭದ ಬೇಡಿಕೆಗಳು)
                   </h3>
-                  <p style={{ margin: '2px 0 0 0', fontSize: '0.8rem', color: '#64748b' }}>
+                  <p style={{ margin: '2px 0 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                     Review branch event requests, check recipe stock feasibility, and approve with auto-deduction.
                   </p>
                 </div>
@@ -2478,8 +2478,8 @@ export const HeadDashboard = () => {
               </div>
 
               {(branchOrdersData.specialOrders || []).filter((o) => eventFilterStatus === 'all' || o.status === eventFilterStatus).length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
-                  <Calendar size={32} style={{ color: '#94a3b8', margin: '0 auto 0.5rem' }} />
+                <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
+                  <Calendar size={32} style={{ color: 'var(--text-muted)', margin: '0 auto 0.5rem' }} />
                   <p style={{ margin: 0, fontSize: '0.875rem' }}>No special event orders in this category.</p>
                 </div>
               ) : (
@@ -2508,20 +2508,20 @@ export const HeadDashboard = () => {
                           return (
                             <tr key={order._id}>
                               <td>
-                                <div style={{ fontWeight: '700', color: '#1e293b' }}>{se.eventName}</div>
+                                <div style={{ fontWeight: '700', color: 'var(--text-main)' }}>{se.eventName}</div>
                                 {se.specialInstructions && (
-                                  <div style={{ fontSize: '0.75rem', color: '#64748b', fontStyle: 'italic', marginTop: '2px' }}>
+                                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic', marginTop: '2px' }}>
                                     Note: {se.specialInstructions}
                                   </div>
                                 )}
                               </td>
-                              <td style={{ fontWeight: '600' }}>{currentLang === 'kn' && order.branchNameKn ? order.branchNameKn : order.branchNameEn}</td>
+                              <td style={{ fontWeight: '600', color: 'var(--text-main)' }}>{currentLang === 'kn' && order.branchNameKn ? order.branchNameKn : order.branchNameEn}</td>
                               <td>
-                                <div style={{ fontWeight: '600' }}>{se.eventDate}</div>
-                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{se.mealSession}</div>
+                                <div style={{ fontWeight: '600', color: 'var(--text-main)' }}>{se.eventDate}</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{se.mealSession}</div>
                               </td>
-                              <td style={{ fontWeight: '700', color: '#1e293b' }}>
-                                {se.peopleCount} <span style={{ fontSize: '0.75rem', fontWeight: 'normal' }}>p</span>
+                              <td style={{ fontWeight: '700', color: 'var(--text-main)' }}>
+                                {se.peopleCount} <span style={{ fontSize: '0.75rem', fontWeight: 'normal', color: 'var(--text-secondary)' }}>p</span>
                               </td>
                               <td>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
@@ -2529,12 +2529,12 @@ export const HeadDashboard = () => {
                                     <span
                                       key={di}
                                       style={{
-                                        background: '#f1f5f9',
-                                        border: '1px solid #cbd5e1',
+                                        background: 'var(--bg-subtle)',
+                                        border: '1px solid var(--border-color)',
                                         borderRadius: '12px',
                                         padding: '1px 8px',
                                         fontSize: '0.75rem',
-                                        color: '#334155',
+                                        color: 'var(--text-main)',
                                       }}
                                     >
                                       {d.dishName}
